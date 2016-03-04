@@ -41,7 +41,10 @@
     )
 
     gulp.task('jade', () =>
-        gulp.src(`${dev}**/*.jade`)
+        gulp.src([
+            `${dev}**/*.jade`,
+            `!${dev}index/index.jade`
+        ])
         .pipe(jade({
             pretty: true
         }))
@@ -61,20 +64,15 @@
     gulp.task('watch', () => {
         gulp.watch(`${dev}**/*.ts`, ['typescript'])
         gulp.watch(`${dev}**/*.styl`, ['styles'])
+        gulp.watch(`${dev}**/*.jade`, ['jade'])
     })
 
     gulp.task('compiledBase' , (cb) =>
-        runSequence('typescript', ['styles', 'jade'], 'clean-index', 'watch', cb)
+        runSequence('typescript', ['styles', 'jade'], 'watch', cb)
     )
 
     gulp.task('clean', (cb) =>
         clean([prod, assetsProd], {
-            force: true
-        }, cb)
-    )
-
-    gulp.task('clean-index', (cb) =>
-        clean([`${prod}index`], {
             force: true
         }, cb)
     )
